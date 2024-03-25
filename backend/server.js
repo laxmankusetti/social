@@ -1,3 +1,4 @@
+import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
 import connectDb from './db/conectDB.js';
@@ -11,10 +12,10 @@ import messageRouter from './routes/message.routes.js';
 
 
 dotenv.config();
-
 connectDb();
 
 const PORT = process.env.PORT || 5000;
+const __dirname = path.resolve();
 
 cloudinary.config({
     api_key:process.env.CLOUDINARY_API_KEY,
@@ -31,6 +32,14 @@ app.use('/api/users', userRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/messages', messageRouter);
 
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+	// react app
+	app.get("*", (req, res) => {
+		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+	});
+}
 server.listen(PORT, () => {
     console.log('App is running on the PORT no: ', PORT);
 });
