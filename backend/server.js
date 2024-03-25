@@ -9,10 +9,12 @@ import { app, server } from './socket/socket.js'
 import userRouter from './routes/user.routes.js';
 import postRouter from './routes/post.routes.js';
 import messageRouter from './routes/message.routes.js';
+import job from './cron/cron.js';
 
 
 dotenv.config();
 connectDb();
+job.start();
 
 const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
